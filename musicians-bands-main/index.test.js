@@ -55,4 +55,19 @@ describe('Band and Musician Models', () => {
 		expect(musicians.length).toBe(2)
 		expect(musicians[1] instanceof Musician).toBeTruthy
     })
+    test('can update a Musician instance', async () => {
+        // TODO - test creating a musician
+        const phish = await Band.create({name : 'Phish', genre : 'Rock'})
+        const spoon = await Band.create({name : 'Spoon', genre : 'Rock'})
+		const bob = await Musician.create({name : 'Bob', instrument : 'guitar'});
+		const jim = await Musician.create({name : 'Jim', instrument : 'voice' });
+		
+		await phish.addMusician(bob)
+        await spoon.addMusician(jim)
+        let foundBand = await Band.findAll()
+        
+        expect(spoon.getMusicians()).toBeTruthy();
+        expect(phish.getMusicians()).toBeTruthy();
+      
+    })
 })
