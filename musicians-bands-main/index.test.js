@@ -33,16 +33,28 @@ describe('Band and Musician Models', () => {
     })
 
     test('can update a Musician instance', async () => {
-        // TODO - test creating a musician
+        // TODO - test creating a musician instance
         const prince = await Musician.create({name: "Prince"});
         await prince.update({instrument: "guitar"});
         await prince.save()
         expect(prince.name).toBe("Prince");
         expect(prince.instrument).toBe("guitar");
     })
+    /*test('can delete a Musician instance', async () => {
+        
+        const prince = await Musician.create({name: "Prince"});
+        await prince.update({instrument: "guitar"});
+        //console.log(prince)
+        await Musician.destroy({
+            where:{name: "Prince"},
+        });
+        console.log(prince.name)
+        // Now this entry was removed from the database
+        expect(prince.name).toBe(undefined);
+    })*/
    
     test('a Band can have multiple Musicians', async () => {
-        // TODO - test creating a musician
+        // TODO - test creating musicians
         const phish = await Band.create({name : 'Phish', genre : 'Rock'})
 
 		const bob = await Musician.create({name : 'Bob', instrument : 'guitar'});
@@ -76,7 +88,9 @@ describe('Band and Musician Models', () => {
         const spoon = await Band.create({name : 'Spoon', genre : 'Rock'})
 		const perfect = await Song.create({title : 'Perfect', year : 1990});
         const hello = await Song.create({title : 'Hello', year : 1999});
+        const bob = await Musician.create({name : 'Bob', instrument : 'guitar'});
 		
+        await phish.addMusician(bob)
 		await phish.addSong(perfect)
         await spoon.addSong(hello)
         const phishBand = await Band.findByPk(1)
@@ -88,6 +102,21 @@ describe('Band and Musician Models', () => {
         console.log(helloBand)
         expect(helloBand[0].name).toBe('Spoon');
         expect(phishSongs[0].title).toBe('Perfect');
+
+        const newMusician = await Band.findAll({
+            include: [
+              { model: Musician, required: true }
+            ]
+          });
+    
+          const newSong = await Band.findAll({
+            include: [
+              { model: Song, required: true }
+            ]
+          });
+        expect(newMusician[0] instanceof Band).toBe(true);
+        expect(newSong[0] instanceof Band).toBe(true);
       
     })
+
 })
